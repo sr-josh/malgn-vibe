@@ -25,7 +25,7 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1>📅 계산기 모음</h1>
+        <h1>📅 내 손 안의 만능 계산기, 계미나이</h1>
         <p>Powered by Cloudflare Pages & Workers</p>
       </header>
 
