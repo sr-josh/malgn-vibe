@@ -1,0 +1,257 @@
+import { useState } from 'react'
+import './Calculator.css'
+
+function DdayCalculator() {
+  const [targetDate, setTargetDate] = useState('')
+  const [targetName, setTargetName] = useState('')
+  const [result, setResult] = useState(null)
+  const [savedDdays, setSavedDdays] = useState([])
+
+  const calculateDday = (e) => {
+    e.preventDefault()
+
+    if (!targetDate) {
+      alert('날짜를 선택해주세요.')
+      return
+    }
+
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    const target = new Date(targetDate)
+    target.setHours(0, 0, 0, 0)
+
+    const diffTime = target - today
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    const isPast = diffDays < 0
+    const isToday = diffDays === 0
+
+    setResult({
+      name: targetName || '목표일',
+      date: target.toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long'
+      }),
+      days: Math.abs(diffDays),
+      isPast,
+      isToday,
+      percentage: calculatePercentage(today, target)
+    })
+  }
+
+  const calculatePercentage = (start, end) => {
+    const yearStart = new Date(start.getFullYear(), 0, 1)
+    const yearEnd = new Date(start.getFullYear(), 11, 31)
+    const totalDays = Math.ceil((yearEnd - yearStart) / (1000 * 60 * 60 * 24))
+    const passedDays = Math.ceil((start - yearStart) / (1000 * 60 * 60 * 24))
+    return ((passedDays / totalDays) * 100).toFixed(1)
+  }
+
+  const saveDday = () => {
+    if (!result) return
+
+    const newDday = {
+      id: Date.now(),
+      name: result.name,
+      date: targetDate,
+      createdAt: new Date().toISOString()
+    }
+
+    setSavedDdays([...savedDdays, newDday])
+    alert('D-day가 저장되었습니다!')
+  }
+
+  const deleteDday = (id) => {
+    setSavedDdays(savedDdays.filter(d => d.id !== id))
+  }
+
+  const loadDday = (dday) => {
+    setTargetDate(dday.date)
+    setTargetName(dday.name)
+  }
+
+  const resetForm = () => {
+    setTargetDate('')
+    setTargetName('')
+    setResult(null)
+  }
+
+  const getQuickDate = (days) => {
+    const date = new Date()
+    date.setDate(date.getDate() + days)
+    return date.toISOString().split('T')[0]
+  }
+
+  const getDdayText = (result) => {
+    if (result.isToday) {
+      return 'D-Day'
+    } else if (result.isPast) {
+      return `D+${result.days}`
+    } else {
+      return `D-${result.days}`
+    }
+  }
+
+  return (
+    <div className="calculator">
+      <div className="calculator-card">
+        <h2 className="calculator-title">📅 D-day 계산기</h2>
+        <p className="calculator-description">
+          목표 날짜까지 남은 일수를 계산해보세요.
+        </p>
+
+        <form onSubmit={calculateDday} className="calculator-form">
+          <div className="form-group">
+            <label htmlFor="targetName">목표 이름</label>
+            <input
+              type="text"
+              id="targetName"
+              value={targetName}
+              onChange={(e) => setTargetName(e.target.value)}
+              placeholder="예: 수능, 결혼기념일, 여행"
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="targetDate">목표 날짜</label>
+            <input
+              type="date"
+              id="targetDate"
+              value={targetDate}
+              onChange={(e) => setTargetDate(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="quick-dates">
+            <span className="quick-label">빠른 선택:</span>
+            <button
+              type="button"
+              onClick={() => setTargetDate(getQuickDate(7))}
+              className="quick-btn"
+            >
+              1주일 후
+            </button>
+            <button
+              type="button"
+              onClick={() => setTargetDate(getQuickDate(30))}
+              className="quick-btn"
+            >
+              1개월 후
+            </button>
+            <button
+              type="button"
+              onClick={() => setTargetDate(getQuickDate(100))}
+              className="quick-btn"
+            >
+              100일 후
+            </button>
+          </div>
+
+          <div className="button-group">
+            <button type="submit" className="btn btn-primary">
+              계산하기
+            </button>
+            <button type="button" onClick={resetForm} className="btn btn-secondary">
+              초기화
+            </button>
+          </div>
+        </form>
+
+        {result && (
+          <div className="result-card">
+            <h3 className="result-title">💡 계산 결과</h3>
+            
+            <div className="dday-display">
+              <div className={`dday-badge ${result.isToday ? 'today' : result.isPast ? 'past' : 'future'}`}>
+                {getDdayText(result)}
+              </div>
+              <h4 className="dday-name">{result.name}</h4>
+              <p className="dday-date">{result.date}</p>
+            </div>
+
+            <div className="result-grid">
+              {!result.isToday && (
+                <div className="result-item highlight">
+                  <span className="result-label">
+                    {result.isPast ? '지난 일수' : '남은 일수'}
+                  </span>
+                  <span className="result-value primary">
+                    {result.days}일
+                  </span>
+                </div>
+              )}
+              
+              {result.isToday && (
+                <div className="result-item highlight">
+                  <span className="result-label">상태</span>
+                  <span className="result-value today-text">오늘이 바로 그날! 🎉</span>
+                </div>
+              )}
+
+              {!result.isPast && !result.isToday && (
+                <>
+                  <div className="result-item">
+                    <span className="result-label">주 단위</span>
+                    <span className="result-value">
+                      약 {Math.floor(result.days / 7)}주
+                    </span>
+                  </div>
+                  <div className="result-item">
+                    <span className="result-label">월 단위</span>
+                    <span className="result-value">
+                      약 {Math.floor(result.days / 30)}개월
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <button onClick={saveDday} className="btn btn-save">
+              ⭐ 즐겨찾기에 저장
+            </button>
+          </div>
+        )}
+
+        {savedDdays.length > 0 && (
+          <div className="saved-ddays">
+            <h3 className="saved-title">⭐ 저장된 D-day</h3>
+            <div className="saved-list">
+              {savedDdays.map((dday) => (
+                <div key={dday.id} className="saved-item">
+                  <div className="saved-info">
+                    <span className="saved-name">{dday.name}</span>
+                    <span className="saved-date">
+                      {new Date(dday.date).toLocaleDateString('ko-KR')}
+                    </span>
+                  </div>
+                  <div className="saved-actions">
+                    <button
+                      onClick={() => loadDday(dday)}
+                      className="btn-icon"
+                      title="불러오기"
+                    >
+                      📥
+                    </button>
+                    <button
+                      onClick={() => deleteDday(dday.id)}
+                      className="btn-icon"
+                      title="삭제"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default DdayCalculator

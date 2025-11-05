@@ -1,0 +1,8 @@
+# 로컬 개발용 환경 변수
+# 이 파일은 Git에 커밋하지 마세요!
+
+# OpenAI API Key (선택사항)
+# OPENAI_API_KEY=your-openai-api-key-here
+
+# 기타 API Keys
+# OTHER_API_KEY=your-api-key-here

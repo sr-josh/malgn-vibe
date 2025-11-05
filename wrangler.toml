@@ -1,0 +1,24 @@
+name = "calculator-collection"
+compatibility_date = "2024-01-01"
+
+# Pages configuration
+pages_build_output_dir = "frontend/dist"
+
+# Workers Functions configuration
+[env.production]
+name = "calculator-collection-production"
+
+# Environment variables (add your API keys here if needed)
+# [vars]
+# API_KEY = ""
+
+# KV Namespace bindings (optional - for storing calculation history)
+# [[kv_namespaces]]
+# binding = "CALCULATOR_HISTORY"
+# id = "your-kv-namespace-id"
+
+# D1 Database bindings (optional - for storing user data)
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "calculator-db"
+# database_id = "your-database-id"
