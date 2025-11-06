@@ -7,7 +7,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('interest')
 
   const calculators = [
-    { id: 'interest', name: '예금 이자 계산기', icon: '💰' },
+    { id: 'interest', name: '이자 계산기', icon: '💰' },
     { id: 'dday', name: 'D-day 계산기', icon: '📅' },
   ]
 
@@ -26,7 +26,6 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <h1>📅 내 손 안의 만능 계산기, 계미나이</h1>
-        <p>Powered by Cloudflare Pages & Workers</p>
       </header>
 
       <nav className="calculator-tabs">
@@ -47,7 +46,8 @@ function App() {
       </main>
 
       <footer className="app-footer">
-        <p>Made with ❤️ using Cloudflare</p>
+        <p>Made by josh</p>
+        <p>Powered by Cloudflare Pages & Workers</p>
       </footer>
     </div>
   )
