@@ -2,7 +2,8 @@ import { useState } from 'react'
 import './Calculator.css'
 
 function InterestCalculator() {
-  const [depositType, setDepositType] = useState('deposit') // 'deposit', 'savings', or 'dailySavings'
+  const [depositType, setDepositType] = useState('deposit') // 'deposit' or 'savings'
+  const [isDailySavings, setIsDailySavings] = useState(false) // 일납 적금 여부
   const [principal, setPrincipal] = useState('')
   const [rate, setRate] = useState('')
   const [period, setPeriod] = useState('')
@@ -47,52 +48,55 @@ function InterestCalculator() {
         totalAmountGross = p * Math.pow(1 + monthlyRate, months)
         interestAmountGross = totalAmountGross - p
       }
-    } else if (depositType === 'savings') {
-      // 월납 적금 계산 (매월 같은 금액 납입)
-      const monthlyDeposit = p  // 매월 납입액
-      const monthlyRate = r / 12
-      const months = t * 12
-      
-      if (compoundType === 'simple') {
-        // 적금 단리: 매월 납입금에 대한 이자 합계
-        // 첫 달 납입금: n개월 이자, 두 번째 달 납입금: n-1개월 이자...
-        interestAmountGross = 0
-        for (let i = 0; i < months; i++) {
-          const remainingMonths = months - i
-          interestAmountGross += monthlyDeposit * (r / 12) * remainingMonths
-        }
-        totalAmountGross = monthlyDeposit * months + interestAmountGross
-      } else {
-        // 적금 복리: 매월 납입금의 복리 계산
-        totalAmountGross = 0
-        for (let i = 0; i < months; i++) {
-          const remainingMonths = months - i
-          totalAmountGross += monthlyDeposit * Math.pow(1 + monthlyRate, remainingMonths)
-        }
-        interestAmountGross = totalAmountGross - (monthlyDeposit * months)
-      }
     } else {
-      // 일납 적금 계산 (매일 같은 금액 납입)
-      const dailyDeposit = p  // 매일 납입액
-      const dailyRate = r / 365
-      const days = t * 365
-      
-      if (compoundType === 'simple') {
-        // 일납 적금 단리
-        interestAmountGross = 0
-        for (let i = 0; i < days; i++) {
-          const remainingDays = days - i
-          interestAmountGross += dailyDeposit * dailyRate * remainingDays
+      // 적금 계산
+      if (isDailySavings) {
+        // 일납 적금 계산 (매일 같은 금액 납입)
+        const dailyDeposit = p  // 매일 납입액
+        const dailyRate = r / 365
+        const days = t * 365
+        
+        if (compoundType === 'simple') {
+          // 일납 적금 단리
+          interestAmountGross = 0
+          for (let i = 0; i < days; i++) {
+            const remainingDays = days - i
+            interestAmountGross += dailyDeposit * dailyRate * remainingDays
+          }
+          totalAmountGross = dailyDeposit * days + interestAmountGross
+        } else {
+          // 일납 적금 복리
+          totalAmountGross = 0
+          for (let i = 0; i < days; i++) {
+            const remainingDays = days - i
+            totalAmountGross += dailyDeposit * Math.pow(1 + dailyRate, remainingDays)
+          }
+          interestAmountGross = totalAmountGross - (dailyDeposit * days)
         }
-        totalAmountGross = dailyDeposit * days + interestAmountGross
       } else {
-        // 일납 적금 복리
-        totalAmountGross = 0
-        for (let i = 0; i < days; i++) {
-          const remainingDays = days - i
-          totalAmountGross += dailyDeposit * Math.pow(1 + dailyRate, remainingDays)
+        // 월납 적금 계산 (매월 같은 금액 납입)
+        const monthlyDeposit = p  // 매월 납입액
+        const monthlyRate = r / 12
+        const months = t * 12
+        
+        if (compoundType === 'simple') {
+          // 적금 단리: 매월 납입금에 대한 이자 합계
+          // 첫 달 납입금: n개월 이자, 두 번째 달 납입금: n-1개월 이자...
+          interestAmountGross = 0
+          for (let i = 0; i < months; i++) {
+            const remainingMonths = months - i
+            interestAmountGross += monthlyDeposit * (r / 12) * remainingMonths
+          }
+          totalAmountGross = monthlyDeposit * months + interestAmountGross
+        } else {
+          // 적금 복리: 매월 납입금의 복리 계산
+          totalAmountGross = 0
+          for (let i = 0; i < months; i++) {
+            const remainingMonths = months - i
+            totalAmountGross += monthlyDeposit * Math.pow(1 + monthlyRate, remainingMonths)
+          }
+          interestAmountGross = totalAmountGross - (monthlyDeposit * months)
         }
-        interestAmountGross = totalAmountGross - (dailyDeposit * days)
       }
     }
 
@@ -103,10 +107,10 @@ function InterestCalculator() {
     let totalAmountNet
     if (depositType === 'deposit') {
       totalAmountNet = p + interestAmountNet
-    } else if (depositType === 'savings') {
-      totalAmountNet = (p * t * 12) + interestAmountNet
-    } else {
+    } else if (isDailySavings) {
       totalAmountNet = (p * t * 365) + interestAmountNet
+    } else {
+      totalAmountNet = (p * t * 12) + interestAmountNet
     }
 
     setResult({
@@ -120,7 +124,8 @@ function InterestCalculator() {
       period: t,
       compoundType: compoundType === 'simple' ? '단리' : '복리',
       taxRate: parseFloat(taxRate),
-      depositType: depositType === 'deposit' ? '예금' : depositType === 'savings' ? '월납 적금' : '일납 적금'
+      depositType: depositType === 'deposit' ? '예금' : isDailySavings ? '적금(일납)' : '적금(월납)',
+      isDailySavings: isDailySavings
     })
   }
 
@@ -136,6 +141,7 @@ function InterestCalculator() {
     setCompoundType('simple')
     setTaxRate('15.4')
     setDepositType('deposit')
+    setIsDailySavings(false)
     setResult(null)
   }
 
@@ -156,6 +162,7 @@ function InterestCalculator() {
                   checked={depositType === 'deposit'}
                   onChange={(e) => {
                     setDepositType(e.target.value)
+                    setIsDailySavings(false)
                     if (periodType === 'days') setPeriodType('months')
                   }}
                 />
@@ -168,29 +175,33 @@ function InterestCalculator() {
                   checked={depositType === 'savings'}
                   onChange={(e) => {
                     setDepositType(e.target.value)
-                    if (periodType === 'days') setPeriodType('months')
                   }}
                 />
-                <span>월납 적금</span>
-              </label>
-              <label className="radio-label">
-                <input
-                  type="radio"
-                  value="dailySavings"
-                  checked={depositType === 'dailySavings'}
-                  onChange={(e) => {
-                    setDepositType(e.target.value)
-                    if (periodType === 'years') setPeriodType('days')
-                  }}
-                />
-                <span>일납 적금</span>
+                <span>적금</span>
+                {depositType === 'savings' && (
+                  <label className="checkbox-inline">
+                    <input
+                      type="checkbox"
+                      checked={isDailySavings}
+                      onChange={(e) => {
+                        setIsDailySavings(e.target.checked)
+                        if (e.target.checked) {
+                          setPeriodType('days')
+                        } else if (periodType === 'days') {
+                          setPeriodType('months')
+                        }
+                      }}
+                    />
+                    <span>일납</span>
+                  </label>
+                )}
               </label>
             </div>
           </div>
 
           <div className="form-group">
             <label htmlFor="principal">
-              {depositType === 'deposit' ? '원금' : depositType === 'savings' ? '월 납입액' : '일 납입액'}
+              {depositType === 'deposit' ? '원금' : isDailySavings ? '일 납입액' : '월 납입액'}
             </label>
             <div className="input-with-unit">
               <input
@@ -247,7 +258,7 @@ function InterestCalculator() {
                 onChange={(e) => setPeriodType(e.target.value)}
                 className="period-select"
               >
-                {depositType === 'dailySavings' ? (
+                {isDailySavings ? (
                   <>
                     <option value="days">일</option>
                     <option value="months">개월</option>
@@ -316,7 +327,7 @@ function InterestCalculator() {
             <div className="result-summary">
               <span className="summary-text">
                 {result.depositType} · 
-                {result.depositType === '예금' ? '원금' : result.depositType === '월납 적금' ? '월 납입액' : '일 납입액'} <strong>{formatNumber(result.principal)}원</strong> · 
+                {result.depositType === '예금' ? '원금' : result.isDailySavings ? '일 납입액' : '월 납입액'} <strong>{formatNumber(result.principal)}원</strong> · 
                 이율 <strong>{result.rate}%</strong> · 
                 기간 <strong>{result.period.toFixed(2)}년</strong> · 
                 {result.compoundType}
@@ -345,9 +356,9 @@ function InterestCalculator() {
                 <span className="detail-value">
                   {result.depositType === '예금' 
                     ? ((result.interestNet / result.principal) * 100).toFixed(2)
-                    : result.depositType === '월납 적금'
-                    ? ((result.interestNet / (result.principal * result.period * 12)) * 100).toFixed(2)
-                    : ((result.interestNet / (result.principal * result.period * 365)) * 100).toFixed(2)
+                    : result.isDailySavings
+                    ? ((result.interestNet / (result.principal * result.period * 365)) * 100).toFixed(2)
+                    : ((result.interestNet / (result.principal * result.period * 12)) * 100).toFixed(2)
                   }%
                 </span>
               </div>

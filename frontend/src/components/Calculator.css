@@ -154,6 +154,67 @@
   accent-color: #667eea;
 }
 
+/* Inline Checkbox (for daily savings) */
+.checkbox-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: 0.75rem;
+  padding: 0.25rem 0.6rem;
+  background: rgba(102, 126, 234, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.checkbox-inline:hover {
+  background: rgba(102, 126, 234, 0.2);
+}
+
+.checkbox-inline input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.checkbox-inline span {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #ddd;
+}
+
+/* Checkbox */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  color: #ddd;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  background: #1a1a1a;
+  border-radius: 8px;
+  border: 2px solid #3d3d3d;
+  transition: all 0.3s;
+}
+
+.checkbox-label:hover {
+  border-color: #667eea;
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.checkbox-label span {
+  font-weight: 500;
+}
+
 /* Amount Buttons */
 .amount-buttons {
   display: flex;
