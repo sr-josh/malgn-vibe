@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './Calculator.css'
 
-function InterestCalculator() {
+function InterestCalculatorNew() {
   const [principal, setPrincipal] = useState('')
   const [rate, setRate] = useState('')
   const [period, setPeriod] = useState('')
@@ -221,4 +221,3 @@ function InterestCalculator() {
   )
 }
 
-export default InterestCalculator
