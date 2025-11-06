@@ -13,7 +13,7 @@ function InterestCalculator() {
   const calculateInterest = (e) => {
     e.preventDefault()
 
-    const p = parseFloat(principal)
+    const p = parseFloat(principal) * 10000  // 만원 단위를 원으로 변환
     const r = parseFloat(rate) / 100
     const t = periodType === 'years' ? parseFloat(period) : parseFloat(period) / 12
 
@@ -29,8 +29,10 @@ function InterestCalculator() {
       interestAmountGross = p * r * t
       totalAmountGross = p + interestAmountGross
     } else {
-      // 복리 계산: A = P(1 + r)^t
-      totalAmountGross = p * Math.pow(1 + r, t)
+      // 월복리 계산: A = P(1 + r/12)^(t*12)
+      const monthlyRate = r / 12
+      const months = t * 12
+      totalAmountGross = p * Math.pow(1 + monthlyRate, months)
       interestAmountGross = totalAmountGross - p
     }
 
@@ -75,17 +77,28 @@ function InterestCalculator() {
 
         <form onSubmit={calculateInterest} className="calculator-form">
           <div className="form-group">
-            <label htmlFor="principal">예금 원금 (원)</label>
-            <input
-              type="number"
-              id="principal"
-              value={principal}
-              onChange={(e) => setPrincipal(e.target.value)}
-              placeholder="예: 10000000"
-              min="0"
-              step="10000"
-              required
-            />
+            <label htmlFor="principal">원금</label>
+            <div className="input-with-unit">
+              <input
+                type="number"
+                id="principal"
+                value={principal}
+                onChange={(e) => setPrincipal(e.target.value)}
+                placeholder="예: 1000"
+                min="0"
+                step="1"
+                required
+              />
+              <span className="input-unit">만원</span>
+            </div>
+            <div className="amount-buttons">
+              <button type="button" className="amount-btn" onClick={() => setPrincipal(prev => String(Number(prev || 0) + 1))}>+1만</button>
+              <button type="button" className="amount-btn" onClick={() => setPrincipal(prev => String(Number(prev || 0) + 10))}>+10만</button>
+              <button type="button" className="amount-btn" onClick={() => setPrincipal(prev => String(Number(prev || 0) + 50))}>+50만</button>
+              <button type="button" className="amount-btn" onClick={() => setPrincipal(prev => String(Number(prev || 0) + 100))}>+100만</button>
+              <button type="button" className="amount-btn" onClick={() => setPrincipal(prev => String(Number(prev || 0) + 500))}>+500만</button>
+              <button type="button" className="amount-btn" onClick={() => setPrincipal(prev => String(Number(prev || 0) + 1000))}>+1000만</button>
+            </div>
           </div>
 
           <div className="form-group">
@@ -126,42 +139,44 @@ function InterestCalculator() {
             </div>
           </div>
 
-          <div className="form-group">
-            <label>이자 계산 방식</label>
-            <div className="radio-group">
-              <label className="radio-label">
-                <input
-                  type="radio"
-                  value="simple"
-                  checked={compoundType === 'simple'}
-                  onChange={(e) => setCompoundType(e.target.value)}
-                />
-                <span>단리</span>
-              </label>
-              <label className="radio-label">
-                <input
-                  type="radio"
-                  value="compound"
-                  checked={compoundType === 'compound'}
-                  onChange={(e) => setCompoundType(e.target.value)}
-                />
-                <span>복리</span>
-              </label>
+          <div className="form-row">
+            <div className="form-group">
+              <label>이자 계산 방식</label>
+              <div className="radio-group">
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    value="simple"
+                    checked={compoundType === 'simple'}
+                    onChange={(e) => setCompoundType(e.target.value)}
+                  />
+                  <span>단리</span>
+                </label>
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    value="compound"
+                    checked={compoundType === 'compound'}
+                    onChange={(e) => setCompoundType(e.target.value)}
+                  />
+                  <span>(월)복리</span>
+                </label>
+              </div>
             </div>
-          </div>
 
-          <div className="form-group">
-            <label htmlFor="tax">세금 옵션</label>
-            <select
-              id="tax"
-              value={taxRate}
-              onChange={(e) => setTaxRate(e.target.value)}
-              className="period-select"
-            >
-              <option value="15.4">소득세 (15.4%)</option>
-              <option value="1.4">저율과세 (1.4%)</option>
-              <option value="0">비과세 (0%)</option>
-            </select>
+            <div className="form-group">
+              <label htmlFor="tax">세금 옵션</label>
+              <select
+                id="tax"
+                value={taxRate}
+                onChange={(e) => setTaxRate(e.target.value)}
+                className="tax-select"
+              >
+                <option value="15.4">일반과세 (15.4%)</option>
+                <option value="1.4">저율과세 (1.4%)</option>
+                <option value="0">비과세 (0%)</option>
+              </select>
+            </div>
           </div>
 
           <div className="button-group">
@@ -173,45 +188,37 @@ function InterestCalculator() {
         {result && (
           <div className="result-card">
             <h3 className="result-title">💡 계산 결과</h3>
-            <div className="result-grid">
-              <div className="result-item">
-                <span className="result-label">원금</span>
-                <span className="result-value">{formatNumber(result.principal)}원</span>
-              </div>
+            
+            {/* 입력 정보 요약 */}
+            <div className="result-summary">
+              <span className="summary-text">
+                원금 <strong>{formatNumber(result.principal)}원</strong> · 
+                이율 <strong>{result.rate}%</strong> · 
+                기간 <strong>{result.period.toFixed(2)}년</strong> · 
+                {result.compoundType}
+              </span>
+            </div>
 
-              <div className="result-item">
-                <span className="result-label">이자 (세전, {result.compoundType})</span>
-                <span className="result-value">{formatNumber(result.interestGross)}원</span>
-              </div>
+            {/* 주요 결과: 이자 */}
+            <div className="result-main">
+              <div className="main-label">세후 이자</div>
+              <div className="main-value">{formatNumber(result.interestNet)}원</div>
+              {result.taxAmount > 0 && (
+                <div className="tax-info">
+                  (세전 {formatNumber(result.interestGross)}원 - 세금 {formatNumber(result.taxAmount)}원)
+                </div>
+              )}
+            </div>
 
-              <div className="result-item">
-                <span className="result-label">세금 ({result.taxRate}%)</span>
-                <span className="result-value">{formatNumber(result.taxAmount)}원</span>
+            {/* 부가 정보 */}
+            <div className="result-details">
+              <div className="detail-item">
+                <span className="detail-label">만기 수령액</span>
+                <span className="detail-value">{formatNumber(result.totalNet)}원</span>
               </div>
-
-              <div className="result-item highlight">
-                <span className="result-label">이자 (세후)</span>
-                <span className="result-value primary">{formatNumber(result.interestNet)}원</span>
-              </div>
-
-              <div className="result-item highlight">
-                <span className="result-label">만기 수령액 (세후)</span>
-                <span className="result-value total">{formatNumber(result.totalNet)}원</span>
-              </div>
-
-              <div className="result-item">
-                <span className="result-label">연 이자율</span>
-                <span className="result-value">{result.rate}%</span>
-              </div>
-
-              <div className="result-item">
-                <span className="result-label">예금 기간</span>
-                <span className="result-value">{result.period.toFixed(2)}년</span>
-              </div>
-
-              <div className="result-item">
-                <span className="result-label">수익률 (세후)</span>
-                <span className="result-value">{((result.interestNet / result.principal) * 100).toFixed(2)}%</span>
+              <div className="detail-item">
+                <span className="detail-label">수익률</span>
+                <span className="detail-value">{((result.interestNet / result.principal) * 100).toFixed(2)}%</span>
               </div>
             </div>
           </div>
