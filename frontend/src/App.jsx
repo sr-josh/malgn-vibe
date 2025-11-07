@@ -1,10 +1,13 @@
 import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
 import './App.css'
 import InterestCalculator from './components/InterestCalculator'
 import DdayCalculator from './components/DdayCalculator'
 import UnitConverter from './components/UnitConverter'
+import About from './pages/About'
+import Board from './pages/Board'
 
-function App() {
+function MainPage() {
   const [activeTab, setActiveTab] = useState('interest')
 
   const calculators = [
@@ -27,9 +30,11 @@ function App() {
   }
 
   return (
-    <div className="app-container">
+    <>
       <header className="app-header">
-        <h1>GPT보다 똑똑한 계산기, 계미나이</h1>
+        <Link to="/" className="header-title">
+          <h1>GPT보다 똑똑한 계산기, 계미나이</h1>
+        </Link>
       </header>
 
       <nav className="calculator-tabs">
@@ -48,12 +53,49 @@ function App() {
       <main className="calculator-content">
         {renderCalculator()}
       </main>
+    </>
+  )
+}
 
-      <footer className="app-footer">
-        <p>Made by josh</p>
-        <p>Powered by Cloudflare Pages & Workers</p>
-      </footer>
-    </div>
+function Footer() {
+  const location = useLocation()
+  const isMainPage = location.pathname === '/'
+
+  return (
+    <footer className="app-footer">
+      <div className="footer-content">
+        <div className="footer-links">
+          <Link to="/about" className="footer-link">소개</Link>
+          <span className="footer-divider">|</span>
+          <Link to="/board" className="footer-link">게시판</Link>
+          {!isMainPage && (
+            <>
+              <span className="footer-divider">|</span>
+              <Link to="/" className="footer-link">홈으로</Link>
+            </>
+          )}
+        </div>
+        <div className="footer-info">
+          <p>Made by josh</p>
+          <p>Powered by Cloudflare Pages & Workers</p>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
+function App() {
+  return (
+    <Router>
+      <div className="app-container">
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/board" element={<Board />} />
+        </Routes>
+        <Footer />
+      </div>
+    </Router>
   )
 }
 
