@@ -6,6 +6,9 @@ import DdayCalculator from './components/DdayCalculator'
 import UnitConverter from './components/UnitConverter'
 import About from './pages/About'
 import Board from './pages/Board'
+import Privacy from './pages/Privacy'
+import Terms from './pages/Terms'
+import Contact from './pages/Contact'
 
 function MainPage() {
   const [activeTab, setActiveTab] = useState('interest')
@@ -68,12 +71,19 @@ function Footer() {
           <Link to="/about" className="footer-link">소개</Link>
           <span className="footer-divider">|</span>
           <Link to="/board" className="footer-link">게시판</Link>
+          <span className="footer-divider">|</span>
+          <Link to="/contact" className="footer-link">문의하기</Link>
           {!isMainPage && (
             <>
               <span className="footer-divider">|</span>
               <Link to="/" className="footer-link">홈으로</Link>
             </>
           )}
+        </div>
+        <div className="footer-links" style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>
+          <Link to="/privacy" className="footer-link">개인정보처리방침</Link>
+          <span className="footer-divider">|</span>
+          <Link to="/terms" className="footer-link">이용약관</Link>
         </div>
         <div className="footer-info">
           <p>Made by josh</p>
@@ -92,6 +102,9 @@ function App() {
           <Route path="/" element={<MainPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/board" element={<Board />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
         <Footer />
       </div>
