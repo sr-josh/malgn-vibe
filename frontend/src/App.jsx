@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import InterestCalculator from './components/InterestCalculator'
 import DdayCalculator from './components/DdayCalculator'
+import UnitConverter from './components/UnitConverter'
 
 function App() {
   const [activeTab, setActiveTab] = useState('interest')
@@ -9,6 +10,7 @@ function App() {
   const calculators = [
     { id: 'interest', name: '이자 계산기', icon: '💰' },
     { id: 'dday', name: 'D-day 계산기', icon: '📅' },
+    { id: 'unit', name: '미국 단위 변환', icon: '🇺🇸' },
   ]
 
   const renderCalculator = () => {
@@ -17,6 +19,8 @@ function App() {
         return <InterestCalculator />
       case 'dday':
         return <DdayCalculator />
+      case 'unit':
+        return <UnitConverter />
       default:
         return <InterestCalculator />
     }
