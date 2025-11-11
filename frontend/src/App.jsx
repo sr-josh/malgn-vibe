@@ -4,6 +4,7 @@ import './App.css'
 import InterestCalculator from './components/InterestCalculator'
 import DdayCalculator from './components/DdayCalculator'
 import UnitConverter from './components/UnitConverter'
+import ExchangeCalculator from './components/ExchangeCalculator'
 import About from './pages/About'
 import Board from './pages/Board'
 import Privacy from './pages/Privacy'
@@ -17,6 +18,7 @@ function MainPage() {
     { id: 'interest', name: '이자 계산기', icon: '💰' },
     { id: 'dday', name: 'D-day 계산기', icon: '📅' },
     { id: 'unit', name: '미국 단위 변환', icon: '🇺🇸' },
+    { id: 'exchange', name: '환율 계산기', icon: '💱' },
   ]
 
   const renderCalculator = () => {
@@ -27,6 +29,8 @@ function MainPage() {
         return <DdayCalculator />
       case 'unit':
         return <UnitConverter />
+      case 'exchange':
+        return <ExchangeCalculator />
       default:
         return <InterestCalculator />
     }
