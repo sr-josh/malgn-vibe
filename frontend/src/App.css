@@ -8,7 +8,7 @@
 
 /* Header */
 .app-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2d3561 0%, #4a6fa5 50%, #5ba3c7 100%);
   padding: 2rem;
   color: white;
   text-align: center;
@@ -64,16 +64,16 @@
 }
 
 .tab-button:hover {
-  border-color: #667eea;
+  border-color: #4a6fa5;
   color: #fff;
   transform: translateY(-2px);
 }
 
 .tab-button.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-color: #667eea;
+  background: linear-gradient(135deg, #2d3561 0%, #4a6fa5 50%, #5ba3c7 100%);
+  border-color: #4a6fa5;
   color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(74, 111, 165, 0.3);
 }
 
 .tab-icon {
