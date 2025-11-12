@@ -108,14 +108,12 @@ function Contact() {
           </form>
         )}
 
-        <section className="contact-info">
+        {/* <section className="contact-info">
           <h2>기타 연락 방법</h2>
           <div className="info-box">
             <p><strong>📧 이메일:</strong> 위 양식을 통해 문의해주세요</p>
-            <p><strong>⏰ 답변 시간:</strong> 영업일 기준 1-3일 이내</p>
-            <p><strong>💡 자주 묻는 질문:</strong> FAQ 페이지를 먼저 확인해보세요</p>
           </div>
-        </section>
+        </section> */}
       </div>
     </div>
   )
