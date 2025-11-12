@@ -39,9 +39,7 @@ function MainPage() {
   return (
     <>
       <header className="app-header">
-        <Link to="/" className="header-title">
-          <h1>GPT보다 똑똑한 계산기, 계미나이</h1>
-        </Link>
+        <h1>GPT보다 똑똑한 계산기, 계미나이</h1>
       </header>
 
       <nav className="calculator-tabs">

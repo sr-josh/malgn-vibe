@@ -235,7 +235,7 @@ function InterestCalculator() {
               onChange={(e) => setRate(e.target.value)}
               placeholder="예: 3.5"
               min="0"
-              step="0.01"
+              step="0.1"
               required
             />
           </div>

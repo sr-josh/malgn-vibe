@@ -31,7 +31,7 @@ function UnitConverter() {
         // 미국 단위
         oz: { name: '온스 (oz)', toKg: 0.0283495, common: ['g'] },
         lb: { name: '파운드 (lb)', toKg: 0.453592, common: ['kg', 'g'] },
-        ton_us: { name: '톤(미국) (ton)', toKg: 907.185, common: ['kg', 'ton'] },
+        ton_us: { name: '톤(미국) (Short ton)', toKg: 907.185, common: ['kg', 'ton'] },
         // 국제 단위
         g: { name: '그램 (g)', toKg: 0.001, common: ['oz', 'kg'] },
         kg: { name: '킬로그램 (kg)', toKg: 1, common: ['lb', 'g'] },

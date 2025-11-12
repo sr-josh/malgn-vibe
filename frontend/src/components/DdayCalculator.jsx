@@ -4,6 +4,7 @@ import './Calculator.css'
 function DdayCalculator() {
   const [targetDate, setTargetDate] = useState('')
   const [targetName, setTargetName] = useState('')
+  const [goalAmount, setGoalAmount] = useState('')
   const [result, setResult] = useState(null)
   const [savedDdays, setSavedDdays] = useState([])
 
@@ -27,6 +28,15 @@ function DdayCalculator() {
     const isPast = diffDays < 0
     const isToday = diffDays === 0
 
+    // 목표량 계산
+    let dailyGoal = null
+    if (goalAmount && !isPast && !isToday) {
+      const goal = parseFloat(goalAmount)
+      if (!isNaN(goal) && goal > 0) {
+        dailyGoal = goal / diffDays
+      }
+    }
+
     setResult({
       name: targetName || '목표일',
       date: target.toLocaleDateString('ko-KR', {
@@ -38,7 +48,9 @@ function DdayCalculator() {
       days: Math.abs(diffDays),
       isPast,
       isToday,
-      percentage: calculatePercentage(today, target)
+      percentage: calculatePercentage(today, target),
+      dailyGoal,
+      totalGoal: goalAmount ? parseFloat(goalAmount) : null
     })
   }
 
@@ -126,6 +138,18 @@ function DdayCalculator() {
             />
           </div>
 
+          <div className="form-group">
+            <label htmlFor="goalAmount">달성할 목표 수치 (선택)</label>
+            <input
+              type="number"
+              id="goalAmount"
+              value={goalAmount}
+              onChange={(e) => setGoalAmount(e.target.value)}
+              placeholder="예: 100000 (걸음), 1000000 (원)"
+              step="any"
+            />
+          </div>
+
           <div className="quick-dates">
             <span className="quick-label">빠른 선택:</span>
             <button
@@ -204,6 +228,25 @@ function DdayCalculator() {
                     <span className="result-label">월 단위</span>
                     <span className="result-value">
                       약 {Math.floor(result.days / 30)}개월
+                    </span>
+                  </div>
+                </>
+              )}
+
+              {result.dailyGoal && (
+                <>
+                  <div className="result-item highlight">
+                    <span className="result-label">하루 목표량</span>
+                    <span className="result-value primary">
+                      {result.dailyGoal.toLocaleString('ko-KR', {
+                        maximumFractionDigits: 2
+                      })}
+                    </span>
+                  </div>
+                  <div className="result-item">
+                    <span className="result-label">총 목표량</span>
+                    <span className="result-value">
+                      {result.totalGoal.toLocaleString('ko-KR')}
                     </span>
                   </div>
                 </>
