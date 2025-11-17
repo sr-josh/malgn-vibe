@@ -43,6 +43,7 @@ function MainPage() {
   return (
     <>
       <header className="app-header">
+        <img src="/images/profile-nobg.png" alt="Profile" className="header-profile" />
         <h1>GPT보다 똑똑한 계산기, 계미나이</h1>
       </header>
 

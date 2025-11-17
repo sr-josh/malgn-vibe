@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './Calculator.css'
 
 function DdayCalculator() {
@@ -7,6 +7,43 @@ function DdayCalculator() {
   const [goalAmount, setGoalAmount] = useState('')
   const [result, setResult] = useState(null)
   const [savedDdays, setSavedDdays] = useState([])
+  const [loading, setLoading] = useState(false)
+
+  // 사용자 ID 가져오기 또는 생성
+  const getUserId = () => {
+    let userId = localStorage.getItem('userId')
+    if (!userId) {
+      userId = 'user_' + Math.random().toString(36).substr(2, 9)
+      localStorage.setItem('userId', userId)
+    }
+    return userId
+  }
+
+  // 컴포넌트 마운트 시 저장된 D-day 불러오기
+  useEffect(() => {
+    loadSavedDdays()
+  }, [])
+
+  // API에서 저장된 D-day 불러오기
+  const loadSavedDdays = async () => {
+    try {
+      setLoading(true)
+      const userId = getUserId()
+      const response = await fetch('/api/ddays', {
+        headers: {
+          'X-User-ID': userId
+        }
+      })
+      const data = await response.json()
+      if (data.success) {
+        setSavedDdays(data.data || [])
+      }
+    } catch (error) {
+      console.error('Failed to load D-days:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const calculateDday = (e) => {
     e.preventDefault()
@@ -62,27 +99,71 @@ function DdayCalculator() {
     return ((passedDays / totalDays) * 100).toFixed(1)
   }
 
-  const saveDday = () => {
+  const saveDday = async () => {
     if (!result) return
 
-    const newDday = {
-      id: Date.now(),
-      name: result.name,
-      date: targetDate,
-      createdAt: new Date().toISOString()
-    }
+    try {
+      setLoading(true)
+      const userId = getUserId()
+      const response = await fetch('/api/ddays', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-User-ID': userId
+        },
+        body: JSON.stringify({
+          name: result.name,
+          targetDate: targetDate,
+          goalAmount: goalAmount ? parseFloat(goalAmount) : null
+        })
+      })
 
-    setSavedDdays([...savedDdays, newDday])
-    alert('D-day가 저장되었습니다!')
+      const data = await response.json()
+      if (data.success) {
+        alert('D-day가 저장되었습니다!')
+        await loadSavedDdays()
+      } else {
+        alert('저장 실패: ' + data.error)
+      }
+    } catch (error) {
+      console.error('Failed to save D-day:', error)
+      alert('저장 중 오류가 발생했습니다')
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const deleteDday = (id) => {
-    setSavedDdays(savedDdays.filter(d => d.id !== id))
+  const deleteDday = async (id) => {
+    if (!confirm('정말 삭제하시겠습니까?')) return
+
+    try {
+      setLoading(true)
+      const userId = getUserId()
+      const response = await fetch(`/api/ddays/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'X-User-ID': userId
+        }
+      })
+
+      const data = await response.json()
+      if (data.success) {
+        await loadSavedDdays()
+      } else {
+        alert('삭제 실패: ' + data.error)
+      }
+    } catch (error) {
+      console.error('Failed to delete D-day:', error)
+      alert('삭제 중 오류가 발생했습니다')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const loadDday = (dday) => {
-    setTargetDate(dday.date)
+    setTargetDate(dday.target_date)
     setTargetName(dday.name)
+    setGoalAmount(dday.goal_amount || '')
   }
 
   const resetForm = () => {
@@ -253,13 +334,19 @@ function DdayCalculator() {
               )}
             </div>
 
-            <button onClick={saveDday} className="btn btn-save">
-              ⭐ 즐겨찾기에 저장
+            <button onClick={saveDday} className="btn btn-save" disabled={loading}>
+              {loading ? '저장 중...' : '⭐ 즐겨찾기에 저장'}
             </button>
           </div>
         )}
 
-        {savedDdays.length > 0 && (
+        {loading && (
+          <div style={{ textAlign: 'center', padding: '2rem', color: '#aaa' }}>
+            로딩 중...
+          </div>
+        )}
+
+        {!loading && savedDdays.length > 0 && (
           <div className="saved-ddays">
             <h3 className="saved-title">⭐ 저장된 D-day</h3>
             <div className="saved-list">
@@ -268,8 +355,13 @@ function DdayCalculator() {
                   <div className="saved-info">
                     <span className="saved-name">{dday.name}</span>
                     <span className="saved-date">
-                      {new Date(dday.date).toLocaleDateString('ko-KR')}
+                      {new Date(dday.target_date).toLocaleDateString('ko-KR')}
                     </span>
+                    {dday.goal_amount && (
+                      <span className="saved-date" style={{ color: '#667eea' }}>
+                        목표: {parseFloat(dday.goal_amount).toLocaleString('ko-KR')}
+                      </span>
+                    )}
                   </div>
                   <div className="saved-actions">
                     <button

@@ -17,8 +17,8 @@ name = "calculator-collection-production"
 # binding = "CALCULATOR_HISTORY"
 # id = "your-kv-namespace-id"
 
-# D1 Database bindings (optional - for storing user data)
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "calculator-db"
-# database_id = "your-database-id"
+# D1 Database bindings - for storing D-day favorites
+[[d1_databases]]
+binding = "DB"
+database_name = "calculator-db"
+database_id = "45e7a465-03bb-4f55-8902-3591727d3fe2"

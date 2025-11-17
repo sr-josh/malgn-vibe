@@ -13,6 +13,25 @@
   color: white;
   text-align: center;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.header-profile {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+  background: transparent;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  transition: transform 0.3s ease;
+  /* 흰색 배경이라면 이 옵션을 시도해보세요 */
+  /* mix-blend-mode: multiply; */
+}
+
+.header-profile:hover {
+  transform: scale(1.05);
 }
 
 .header-title {
@@ -155,6 +174,16 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .header-profile {
+    height: 60px;
+  }
+
   .app-header h1 {
     font-size: 1.8rem;
   }
