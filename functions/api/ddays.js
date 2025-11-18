@@ -12,7 +12,7 @@ export async function onRequest(context) {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Headers': 'Content-Type, X-User-ID',
   };
 
   // OPTIONS 요청 처리 (CORS preflight)
@@ -21,6 +21,19 @@ export async function onRequest(context) {
   }
 
   try {
+    // D1 바인딩 확인
+    if (!env.DB) {
+      console.error('D1 binding not found. Please add DB binding in Cloudflare Pages settings.');
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Database not configured. Please contact administrator.',
+          debug: 'D1 binding missing'
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // 사용자 ID (실제로는 인증 시스템에서 가져와야 함)
     // 지금은 브라우저의 localStorage 또는 쿠키에서 가져온다고 가정
     const userId = request.headers.get('X-User-ID') || 'anonymous';
@@ -94,7 +107,16 @@ export async function onRequest(context) {
   } catch (error) {
     console.error('API Error:', error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ 
+        success: false, 
+        error: error.message,
+        stack: error.stack,
+        debug: {
+          hasDB: !!env?.DB,
+          method: method,
+          url: url.pathname
+        }
+      }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

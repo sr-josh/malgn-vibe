@@ -24,25 +24,54 @@ function DdayCalculator() {
     loadSavedDdays()
   }, [])
 
-  // API에서 저장된 D-day 불러오기
+  // 저장된 D-day 불러오기 (개발 환경에서는 localStorage, 프로덕션에서는 API 사용)
   const loadSavedDdays = async () => {
     try {
       setLoading(true)
-      const userId = getUserId()
-      const response = await fetch('/api/ddays', {
-        headers: {
-          'X-User-ID': userId
+      
+      // API가 있는지 확인
+      const useAPI = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+      
+      if (useAPI) {
+        // 프로덕션: API 사용
+        const userId = getUserId()
+        const response = await fetch('/api/ddays', {
+          headers: {
+            'X-User-ID': userId
+          }
+        })
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success) {
+            setSavedDdays(data.data || [])
+          }
+        } else {
+          // API 실패 시 localStorage로 폴백
+          loadFromLocalStorage()
         }
-      })
-      const data = await response.json()
-      if (data.success) {
-        setSavedDdays(data.data || [])
+      } else {
+        // 개발 환경: localStorage 사용
+        loadFromLocalStorage()
       }
     } catch (error) {
       console.error('Failed to load D-days:', error)
+      loadFromLocalStorage()
     } finally {
       setLoading(false)
     }
+  }
+
+  // localStorage에서 불러오기
+  const loadFromLocalStorage = () => {
+    const saved = localStorage.getItem('savedDdays')
+    if (saved) {
+      setSavedDdays(JSON.parse(saved))
+    }
+  }
+
+  // localStorage에 저장
+  const saveToLocalStorage = (ddays) => {
+    localStorage.setItem('savedDdays', JSON.stringify(ddays))
   }
 
   const calculateDday = (e) => {
@@ -104,30 +133,65 @@ function DdayCalculator() {
 
     try {
       setLoading(true)
-      const userId = getUserId()
-      const response = await fetch('/api/ddays', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-User-ID': userId
-        },
-        body: JSON.stringify({
-          name: result.name,
-          targetDate: targetDate,
-          goalAmount: goalAmount ? parseFloat(goalAmount) : null
-        })
-      })
+      const useAPI = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+      
+      const newDday = {
+        id: Date.now().toString(),
+        name: result.name,
+        target_date: targetDate,
+        goal_amount: goalAmount ? parseFloat(goalAmount) : null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
 
-      const data = await response.json()
-      if (data.success) {
-        alert('D-day가 저장되었습니다!')
-        await loadSavedDdays()
+      if (useAPI) {
+        // 프로덕션: API 사용
+        const userId = getUserId()
+        const response = await fetch('/api/ddays', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-User-ID': userId
+          },
+          body: JSON.stringify({
+            name: result.name,
+            targetDate: targetDate,
+            goalAmount: goalAmount ? parseFloat(goalAmount) : null
+          })
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success) {
+            alert('D-day가 저장되었습니다!')
+            await loadSavedDdays()
+          } else {
+            alert('저장 실패: ' + data.error)
+          }
+        } else {
+          throw new Error('API 저장 실패')
+        }
       } else {
-        alert('저장 실패: ' + data.error)
+        // 개발 환경: localStorage 사용
+        const updatedDdays = [...savedDdays, newDday]
+        setSavedDdays(updatedDdays)
+        saveToLocalStorage(updatedDdays)
+        alert('D-day가 저장되었습니다!')
       }
     } catch (error) {
       console.error('Failed to save D-day:', error)
-      alert('저장 중 오류가 발생했습니다')
+      // 오류 발생 시 localStorage로 저장
+      const newDday = {
+        id: Date.now().toString(),
+        name: result.name,
+        target_date: targetDate,
+        goal_amount: goalAmount ? parseFloat(goalAmount) : null,
+        created_at: new Date().toISOString()
+      }
+      const updatedDdays = [...savedDdays, newDday]
+      setSavedDdays(updatedDdays)
+      saveToLocalStorage(updatedDdays)
+      alert('D-day가 저장되었습니다!')
     } finally {
       setLoading(false)
     }
@@ -138,23 +202,40 @@ function DdayCalculator() {
 
     try {
       setLoading(true)
-      const userId = getUserId()
-      const response = await fetch(`/api/ddays/${id}`, {
-        method: 'DELETE',
-        headers: {
-          'X-User-ID': userId
-        }
-      })
+      const useAPI = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+      
+      if (useAPI) {
+        // 프로덕션: API 사용
+        const userId = getUserId()
+        const response = await fetch(`/api/ddays/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'X-User-ID': userId
+          }
+        })
 
-      const data = await response.json()
-      if (data.success) {
-        await loadSavedDdays()
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success) {
+            await loadSavedDdays()
+          } else {
+            alert('삭제 실패: ' + data.error)
+          }
+        } else {
+          throw new Error('API 삭제 실패')
+        }
       } else {
-        alert('삭제 실패: ' + data.error)
+        // 개발 환경: localStorage 사용
+        const updatedDdays = savedDdays.filter(d => d.id !== id)
+        setSavedDdays(updatedDdays)
+        saveToLocalStorage(updatedDdays)
       }
     } catch (error) {
       console.error('Failed to delete D-day:', error)
-      alert('삭제 중 오류가 발생했습니다')
+      // 오류 발생 시 localStorage에서 삭제
+      const updatedDdays = savedDdays.filter(d => d.id !== id)
+      setSavedDdays(updatedDdays)
+      saveToLocalStorage(updatedDdays)
     } finally {
       setLoading(false)
     }

@@ -4,6 +4,8 @@
   "description": "Calculator collection project with Cloudflare Pages and Workers",
   "scripts": {
     "dev": "npm run dev --prefix frontend",
+    "dev:pages": "npm run build --prefix frontend && wrangler pages dev frontend/dist --d1 DB=calculator-db --live-reload",
+    "dev:full": "concurrently \"npm run dev --prefix frontend\" \"wait-on http://localhost:5173 && wrangler pages dev frontend/dist --d1 DB=calculator-db --proxy http://localhost:5173\"",
     "build": "npm run build --prefix frontend",
     "deploy": "wrangler pages deploy frontend/dist",
     "deploy:functions": "wrangler deploy"
