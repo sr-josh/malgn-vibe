@@ -1,0 +1,46 @@
+# Cloudflare Workers 설정
+# 각 Worker는 별도의 wrangler.toml 파일을 가질 수 있습니다
+
+name = "calculator-worker-example"
+main = "workers/example.js"
+compatibility_date = "2024-01-01"
+
+# Worker 라우팅 (선택사항)
+# routes = [
+#   { pattern = "worker.gyemini.pages.dev/*", zone_name = "gyemini.pages.dev" }
+# ]
+
+# D1 Database 바인딩
+[[d1_databases]]
+binding = "DB"
+database_name = "calculator-db"
+database_id = "45e7a465-03bb-4f55-8902-3591727d3fe2"
+
+# KV Namespace 바인딩 (필요시)
+# [[kv_namespaces]]
+# binding = "KV"
+# id = "your-kv-namespace-id"
+
+# R2 Bucket 바인딩 (필요시)
+# [[r2_buckets]]
+# binding = "BUCKET"
+# bucket_name = "your-bucket-name"
+
+# Cron Triggers (scheduled events)
+# [triggers]
+# crons = ["0 0 * * *"]  # 매일 자정 실행
+
+# Queue 바인딩 (필요시)
+# [[queues.producers]]
+# binding = "QUEUE"
+# queue = "calculator-queue"
+
+# [[queues.consumers]]
+# queue = "calculator-queue"
+
+# 환경 변수
+# [vars]
+# ENVIRONMENT = "production"
+
+# Secret 환경 변수 (실제 값은 `wrangler secret put` 명령으로 설정)
+# 예: wrangler secret put API_KEY
