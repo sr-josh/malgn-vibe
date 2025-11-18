@@ -4,21 +4,17 @@ compatibility_date = "2024-01-01"
 # Pages configuration
 pages_build_output_dir = "frontend/dist"
 
-# Workers Functions configuration
+# D1 Database bindings - for storing D-day favorites
+[[d1_databases]]
+binding = "DB"
+database_name = "calculator-db"
+database_id = "45e7a465-03bb-4f55-8902-3591727d3fe2"
+
+# Production environment
 [env.production]
 name = "calculator-collection-production"
 
-# Environment variables (add your API keys here if needed)
-# [vars]
-# API_KEY = ""
-
-# KV Namespace bindings (optional - for storing calculation history)
-# [[kv_namespaces]]
-# binding = "CALCULATOR_HISTORY"
-# id = "your-kv-namespace-id"
-
-# D1 Database bindings - for storing D-day favorites
-[[d1_databases]]
+[[env.production.d1_databases]]
 binding = "DB"
 database_name = "calculator-db"
 database_id = "45e7a465-03bb-4f55-8902-3591727d3fe2"
