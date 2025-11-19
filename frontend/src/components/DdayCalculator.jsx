@@ -242,9 +242,56 @@ function DdayCalculator() {
   }
 
   const loadDday = (dday) => {
+    // 입력값 설정
     setTargetDate(dday.target_date)
     setTargetName(dday.name)
     setGoalAmount(dday.goal_amount || '')
+    
+    // 자동으로 결과 계산
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    
+    const target = new Date(dday.target_date)
+    target.setHours(0, 0, 0, 0)
+
+    const diffTime = target - today
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    const isPast = diffDays < 0
+    const isToday = diffDays === 0
+
+    // 목표량 계산
+    let dailyGoal = null
+    if (dday.goal_amount && !isPast && !isToday) {
+      const goal = parseFloat(dday.goal_amount)
+      if (!isNaN(goal) && goal > 0) {
+        dailyGoal = goal / diffDays
+      }
+    }
+
+    setResult({
+      name: dday.name || '목표일',
+      date: target.toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        weekday: 'long'
+      }),
+      days: Math.abs(diffDays),
+      isPast,
+      isToday,
+      percentage: calculatePercentage(today, target),
+      dailyGoal,
+      totalGoal: dday.goal_amount ? parseFloat(dday.goal_amount) : null
+    })
+    
+    // 결과로 스크롤
+    setTimeout(() => {
+      const resultCard = document.querySelector('.result-card')
+      if (resultCard) {
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      }
+    }, 100)
   }
 
   const resetForm = () => {

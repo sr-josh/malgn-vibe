@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
 import './App.css'
+import SalaryCalculator from './components/SalaryCalculator'
 import InterestCalculator from './components/InterestCalculator'
 import DdayCalculator from './components/DdayCalculator'
 import UnitConverter from './components/UnitConverter'
@@ -13,9 +14,10 @@ import Terms from './pages/Terms'
 import Contact from './pages/Contact'
 
 function MainPage() {
-  const [activeTab, setActiveTab] = useState('interest')
+  const [activeTab, setActiveTab] = useState('salary')
 
   const calculators = [
+    { id: 'salary', name: '연봉 계산기', icon: '💵' },
     { id: 'interest', name: '이자 계산기', icon: '💰' },
     { id: 'dday', name: 'D-day 계산기', icon: '📅' },
     { id: 'unit', name: '미국 단위 변환', icon: '🇺🇸' },
@@ -25,6 +27,8 @@ function MainPage() {
 
   const renderCalculator = () => {
     switch (activeTab) {
+      case 'salary':
+        return <SalaryCalculator />
       case 'interest':
         return <InterestCalculator />
       case 'dday':

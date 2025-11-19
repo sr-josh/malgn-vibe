@@ -1,5 +1,7 @@
 .calculator { display: flex; justify-content: center; align-items: flex-start; animation: fadeIn 0.5s ease-in; }
+.calculator-container { display: flex; justify-content: center; align-items: flex-start; padding: 2rem 1rem; }
 .calculator-card { width: 100%; max-width: 600px; background: #242424; border-radius: 16px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); padding: 2rem; animation: slideUp 0.5s ease-out; }
+.calculator-card.salary-calculator { max-width: 700px; }
 @keyframes slideUp { from { opacity: 0; transform: translateY(30px); }}
 to { opacity: 1; transform: translateY(0); }
 .calculator-title { margin: 0 0 0.5rem; font-size: 1.8rem; color: #fff; text-align: center; }
@@ -147,3 +149,44 @@ to { opacity: 1; transform: translateY(0); }
 .rate-item:hover { border-color: #667eea; transform: translateY(-2px); }
 .rate-currency { color: #ddd; font-weight: 600; font-size: 0.9rem; }
 .rate-value { color: #667eea; font-weight: 600; font-size: 0.9rem; }
+
+/* 연봉 계산기 스타일 */
+.mode-selector { display: flex; gap: 1rem; margin-bottom: 2rem; }
+.mode-btn { flex: 1; padding: 1rem; border: 2px solid #3d3d3d; border-radius: 10px; background: #2d2d2d; color: #ddd; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.mode-btn:hover { border-color: #667eea; background: rgba(102, 126, 234, 0.1); }
+.mode-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-color: #667eea; }
+.input-wrapper { position: relative; display: flex; align-items: center; }
+.input-wrapper input { width: 100%; padding: 0.875rem; padding-right: 50px; border: 2px solid #3d3d3d; border-radius: 8px; background: #1a1a1a; color: white; font-size: 1rem; transition: border-color 0.3s; }
+.input-wrapper input:focus { outline: none; border-color: #667eea; }
+.input-suffix { position: absolute; right: 15px; color: #aaa; font-size: 1rem; font-weight: 600; pointer-events: none; }
+.calculate-btn { flex: 2; padding: 1rem; border: none; border-radius: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.calculate-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); }
+.reset-btn { flex: 1; padding: 1rem; border: 2px solid #3d3d3d; border-radius: 10px; background: #2d2d2d; color: #ddd; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.reset-btn:hover { background: #3d3d3d; border-color: #4d4d4d; }
+.salary-result { background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%); }
+.result-summary { margin-bottom: 2rem; }
+.result-summary h3 { margin: 0 0 1.5rem; font-size: 1.5rem; color: #fff; text-align: center; }
+.salary-main { display: flex; flex-direction: column; gap: 1rem; align-items: center; padding: 1.5rem; background: rgba(102, 126, 234, 0.05); border-radius: 12px; border: 2px solid rgba(102, 126, 234, 0.2); }
+.salary-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 100%; }
+.salary-item .label { color: #aaa; font-size: 0.95rem; font-weight: 500; }
+.salary-item .value { font-size: 2rem; font-weight: 700; }
+.salary-item .value.gross { color: #f093fb; }
+.salary-item .value.net { color: #4facfe; }
+.salary-arrow { font-size: 2rem; color: #667eea; animation: bounce 2s infinite; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.salary-monthly { margin: 2rem 0; padding: 1.5rem; background: #1a1a1a; border-radius: 12px; border: 1px solid #3d3d3d; }
+.salary-monthly h4 { margin: 0 0 1rem; color: #fff; font-size: 1.2rem; }
+.salary-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid #2d2d2d; }
+.salary-row:last-child { border-bottom: none; }
+.salary-row.main { font-size: 1.1rem; font-weight: 600; color: #ddd; }
+.salary-row.net { font-size: 1.2rem; font-weight: 700; color: #4facfe; background: rgba(79, 172, 254, 0.1); border-radius: 8px; margin-top: 0.5rem; }
+.salary-row .amount { font-weight: 700; }
+.deductions { margin: 2rem 0; padding: 1.5rem; background: #1a1a1a; border-radius: 12px; border: 1px solid #3d3d3d; }
+.deductions h4 { margin: 0 0 1rem; color: #fff; font-size: 1.2rem; }
+.deduction-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid #2d2d2d; color: #ddd; }
+.deduction-item:last-of-type { border-bottom: 2px solid #3d3d3d; margin-bottom: 0.75rem; }
+.deduction-total { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: rgba(245, 87, 108, 0.1); border-radius: 8px; font-size: 1.1rem; font-weight: 700; color: #f5576c; }
+.info-box { margin-top: 2rem; padding: 1.5rem; background: rgba(102, 126, 234, 0.05); border-left: 4px solid #667eea; border-radius: 8px; }
+.info-box p { margin: 0 0 0.75rem; color: #fff; font-weight: 600; }
+.info-box ul { margin: 0; padding-left: 1.5rem; color: #aaa; }
+.info-box li { margin: 0.5rem 0; font-size: 0.9rem; line-height: 1.5; }

@@ -25,13 +25,31 @@
   object-fit: contain;
   background: transparent;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
-  transition: transform 0.3s ease;
-  /* 흰색 배경이라면 이 옵션을 시도해보세요 */
-  /* mix-blend-mode: multiply; */
+  animation: walkAcrossScreen 15s linear infinite;
+  cursor: pointer;
+}
+
+@keyframes walkAcrossScreen {
+  0% {
+    transform: translateX(-100px) scaleX(1);
+  }
+  48% {
+    transform: translateX(calc(100vw - 180px)) scaleX(1);
+  }
+  50% {
+    transform: translateX(calc(100vw - 180px)) scaleX(-1);
+  }
+  98% {
+    transform: translateX(-100px) scaleX(-1);
+  }
+  100% {
+    transform: translateX(-100px) scaleX(1);
+  }
 }
 
 .header-profile:hover {
-  transform: scale(1.05);
+  animation-play-state: paused;
+  transform: scale(1.2);
 }
 
 .header-title {
