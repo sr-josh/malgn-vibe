@@ -12,27 +12,53 @@ function SalaryCalculator() {
   const calculateDeductions = (annualAmount, applySmallBusinessTax = false) => {
     const monthly = annualAmount / 12
 
-    // 연봉별 정확한 공제액 테이블 (100만원 단위)
+    // 연봉별 정확한 공제액 테이블 (참고: https://job.cosmosfarm.com)
     const deductionTable = {
-      10000000: { pension: 5192, health: 2749, longterm: 1906, employment: 140, incomeTax: 0 },
-      20000000: { pension: 12175, health: 5874, longterm: 4073, employment: 300, incomeTax: 983 },
-      30000000: { pension: 20972, health: 9000, longterm: 6240, employment: 460, incomeTax: 3611 },
-      40000000: { pension: 34683, health: 12124, longterm: 8406, employment: 620, incomeTax: 10711 },
-      50000000: { pension: 51196, health: 15249, longterm: 10573, employment: 780, incomeTax: 20357 },
-      60000000: { pension: 68044, health: 18375, longterm: 12740, employment: 940, incomeTax: 30305 },
-      70000000: { pension: 87293, health: 21498, longterm: 14906, employment: 1100, incomeTax: 42439 },
-      80000000: { pension: 112738, health: 24579, longterm: 17073, employment: 1259, incomeTax: 60205 },
-      90000000: { pension: 135930, health: 27750, longterm: 19240, employment: 1419, incomeTax: 76754 },
-      100000000: { pension: 159119, health: 30874, longterm: 21406, employment: 1579, incomeTax: 91638 },
+      10000000: { pension: 32990, health: 22870, longterm: 1680, employment: 4760, incomeTax: 0 },
+      11000000: { pension: 36740, health: 25470, longterm: 1870, employment: 5300, incomeTax: 0 },
+      12000000: { pension: 40500, health: 28080, longterm: 2070, employment: 5850, incomeTax: 0 },
+      13000000: { pension: 44240, health: 30670, longterm: 2260, employment: 6390, incomeTax: 830 },
+      14000000: { pension: 47990, health: 33270, longterm: 2450, employment: 6930, incomeTax: 2090 },
+      15000000: { pension: 51750, health: 35880, longterm: 2640, employment: 7470, incomeTax: 3350 },
+      16000000: { pension: 55490, health: 38470, longterm: 2830, employment: 8010, incomeTax: 4610 },
+      17000000: { pension: 59240, health: 41070, longterm: 3030, employment: 8550, incomeTax: 6320 },
+      18000000: { pension: 63000, health: 43680, longterm: 3220, employment: 9100, incomeTax: 8150 },
+      19000000: { pension: 66740, health: 46270, longterm: 3410, employment: 9640, incomeTax: 9970 },
+      20000000: { pension: 70490, health: 48870, longterm: 3600, employment: 10180, incomeTax: 11790 },
+      21000000: { pension: 74250, health: 51480, longterm: 3790, employment: 10720, incomeTax: 13610 },
+      22000000: { pension: 77990, health: 54070, longterm: 3990, employment: 11260, incomeTax: 15440 },
+      23000000: { pension: 81740, health: 56670, longterm: 4180, employment: 11800, incomeTax: 17260 },
+      24000000: { pension: 85500, health: 59280, longterm: 4370, employment: 12350, incomeTax: 19270 },
+      25000000: { pension: 89240, health: 61870, longterm: 4560, employment: 12890, incomeTax: 22100 },
+      26000000: { pension: 92990, health: 64470, longterm: 4750, employment: 13430, incomeTax: 24940 },
+      27000000: { pension: 96750, health: 67080, longterm: 4950, employment: 13970, incomeTax: 27770 },
+      28000000: { pension: 100490, health: 69670, longterm: 5140, employment: 14510, incomeTax: 30610 },
+      29000000: { pension: 104240, health: 72270, longterm: 5330, employment: 15050, incomeTax: 36240 },
+      30000000: { pension: 109120, health: 75650, longterm: 5580, employment: 15750, incomeTax: 68940 },
+      40000000: { pension: 145490, health: 100870, longterm: 7440, employment: 21010, incomeTax: 128530 },
+      50000000: { pension: 181860, health: 126080, longterm: 9300, employment: 26260, incomeTax: 196730 },
+      60000000: { pension: 218240, health: 151300, longterm: 11160, employment: 31510, incomeTax: 273550 },
+      70000000: { pension: 254610, health: 176520, longterm: 13020, employment: 36760, incomeTax: 358970 },
+      80000000: { pension: 290980, health: 201730, longterm: 14880, employment: 42020, incomeTax: 452990 },
+      90000000: { pension: 297000, health: 226950, longterm: 16740, employment: 47270, incomeTax: 555620 },
+      100000000: { pension: 297000, health: 252160, longterm: 18600, employment: 52520, incomeTax: 666850 },
     }
 
     // 구간 찾아서 선형 보간
     let nationalPension, healthInsurance, longTermCare, employmentInsurance, incomeTax
 
-    const annualRounded = Math.floor(annualAmount / 1000000) * 1000000
     const tableKeys = Object.keys(deductionTable).map(Number).sort((a, b) => a - b)
     
-    if (annualAmount <= tableKeys[0]) {
+    // 테이블에 정확히 일치하는 값이 있는지 확인
+    if (deductionTable[annualAmount]) {
+      const data = deductionTable[annualAmount]
+      nationalPension = data.pension
+      healthInsurance = data.health
+      longTermCare = data.longterm
+      employmentInsurance = data.employment
+      incomeTax = data.incomeTax
+    } else if (annualAmount < tableKeys[0]) {
+      // 최소값보다 작으면 비례 계산
       const ratio = annualAmount / tableKeys[0]
       const base = deductionTable[tableKeys[0]]
       nationalPension = Math.round(base.pension * ratio)
@@ -40,21 +66,27 @@ function SalaryCalculator() {
       longTermCare = Math.round(base.longterm * ratio)
       employmentInsurance = Math.round(base.employment * ratio)
       incomeTax = Math.round(base.incomeTax * ratio)
-    } else if (annualAmount >= tableKeys[tableKeys.length - 1]) {
+    } else if (annualAmount > tableKeys[tableKeys.length - 1]) {
+      // 최대값보다 크면 외삽
       const baseAnnual = tableKeys[tableKeys.length - 1]
+      const prevAnnual = tableKeys[tableKeys.length - 2]
       const base = deductionTable[baseAnnual]
-      const extraRatio = (annualAmount - baseAnnual) / 10000000
-      nationalPension = Math.round(base.pension + extraRatio * 20000)
-      healthInsurance = Math.round(base.health + extraRatio * 3400)
-      longTermCare = Math.round(base.longterm + extraRatio * 2200)
-      employmentInsurance = Math.round(base.employment + extraRatio * 160)
-      incomeTax = Math.round(base.incomeTax + extraRatio * 15000)
+      const prev = deductionTable[prevAnnual]
+      const diff = baseAnnual - prevAnnual
+      const extraAmount = annualAmount - baseAnnual
+      const extraRatio = extraAmount / diff
+      
+      nationalPension = Math.round(base.pension + (base.pension - prev.pension) * extraRatio)
+      healthInsurance = Math.round(base.health + (base.health - prev.health) * extraRatio)
+      longTermCare = Math.round(base.longterm + (base.longterm - prev.longterm) * extraRatio)
+      employmentInsurance = Math.round(base.employment + (base.employment - prev.employment) * extraRatio)
+      incomeTax = Math.round(base.incomeTax + (base.incomeTax - prev.incomeTax) * extraRatio)
     } else {
       // 구간 보간
       let lower = tableKeys[0]
       let upper = tableKeys[1]
       for (let i = 0; i < tableKeys.length - 1; i++) {
-        if (annualAmount >= tableKeys[i] && annualAmount <= tableKeys[i + 1]) {
+        if (annualAmount > tableKeys[i] && annualAmount < tableKeys[i + 1]) {
           lower = tableKeys[i]
           upper = tableKeys[i + 1]
           break
