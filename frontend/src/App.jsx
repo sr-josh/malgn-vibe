@@ -15,6 +15,10 @@ import Contact from './pages/Contact'
 
 function MainPage() {
   const [activeTab, setActiveTab] = useState('salary')
+  const [showSpeechBubble, setShowSpeechBubble] = useState(false)
+  const [speechText, setSpeechText] = useState('계빠르지!')
+  const [messageIndex, setMessageIndex] = useState(0)
+  const [animationSpeed, setAnimationSpeed] = useState(15)
 
   const calculators = [
     { id: 'salary', name: '연봉 계산기', icon: '💵' },
@@ -24,6 +28,21 @@ function MainPage() {
     { id: 'exchange', name: '환율 계산기', icon: '💱' },
     { id: 'crypto', name: '암호화', icon: '🔐' },
   ]
+
+  const handleHamsterClick = () => {
+    const messages = ['계빠르지!', '못잡계찌!']
+    const nextIndex = (messageIndex + 1) % messages.length
+    setSpeechText(messages[nextIndex])
+    setMessageIndex(nextIndex)
+    setShowSpeechBubble(true)
+    
+    // 클릭할 때마다 30% 빨라짐 (최소 2초까지)
+    setAnimationSpeed(prev => Math.max(2, prev * 0.7))
+    
+    setTimeout(() => {
+      setShowSpeechBubble(false)
+    }, 2000)
+  }
 
   const renderCalculator = () => {
     switch (activeTab) {
@@ -47,7 +66,25 @@ function MainPage() {
   return (
     <>
       <header className="app-header">
-        <img src="/images/profile-nobg.png" alt="Profile" className="header-profile" />
+        <div 
+          className="hamster-container"
+          style={{
+            animationDuration: `${animationSpeed}s`
+          }}
+        >
+          <img 
+            src="/images/profile-nobg.png" 
+            alt="Profile" 
+            className="header-profile" 
+            onClick={handleHamsterClick}
+            style={{
+              animationDuration: `${animationSpeed}s`
+            }}
+          />
+          {showSpeechBubble && (
+            <div className="speech-bubble">{speechText}</div>
+          )}
+        </div>
         <h1>GPT보다 똑똑한 계산기, 계미나이</h1>
       </header>
 

@@ -17,6 +17,8 @@
   align-items: center;
   justify-content: center;
   gap: 1.5rem;
+  position: relative;
+  min-height: 120px;
 }
 
 .header-profile {
@@ -25,36 +27,103 @@
   object-fit: contain;
   background: transparent;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
-  animation: walkAcrossScreen 15s linear infinite;
   cursor: pointer;
+  animation: flipHamster 15s linear infinite;
 }
 
 @keyframes walkAcrossScreen {
   0% {
-    transform: translateX(-100px) scaleX(1);
+    left: -100px;
   }
   48% {
-    transform: translateX(calc(100vw - 180px)) scaleX(1);
+    left: calc(100vw - 180px);
   }
   50% {
-    transform: translateX(calc(100vw - 180px)) scaleX(-1);
+    left: calc(100vw - 180px);
   }
   98% {
-    transform: translateX(-100px) scaleX(-1);
+    left: -100px;
   }
   100% {
-    transform: translateX(-100px) scaleX(1);
+    left: -100px;
   }
 }
 
-.header-profile:hover {
-  animation-play-state: paused;
-  transform: scale(1.2);
+@keyframes flipHamster {
+  0% {
+    transform: scaleX(1);
+  }
+  48% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(-1);
+  }
+  98% {
+    transform: scaleX(-1);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+.header-profile:active {
+  transform: scale(0.95);
 }
 
 .header-title {
   text-decoration: none;
   color: inherit;
+}
+
+.hamster-container {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  animation: walkAcrossScreen 15s linear infinite;
+  z-index: 10;
+}
+
+.speech-bubble {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  color: #333;
+  padding: 10px 15px;
+  border-radius: 15px;
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: bubbleAppear 0.3s ease-out;
+  z-index: 1001;
+  pointer-events: none;
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid white;
+}
+
+@keyframes bubbleAppear {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 .header-title:hover h1 {
