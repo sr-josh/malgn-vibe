@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
 import './App.css'
 import SalaryCalculator from './components/SalaryCalculator'
@@ -19,15 +19,50 @@ function MainPage() {
   const [speechText, setSpeechText] = useState('계빠르지!')
   const [messageIndex, setMessageIndex] = useState(0)
   const [animationSpeed, setAnimationSpeed] = useState(15)
+  const [calculators, setCalculators] = useState([
+    { id: 'salary', name: '연봉 계산기', icon: '💵', click_count: 0 },
+    { id: 'interest', name: '이자 계산기', icon: '💰', click_count: 0 },
+    { id: 'dday', name: 'D-day 계산기', icon: '📅', click_count: 0 },
+    { id: 'unit', name: '미국 단위 변환', icon: '🇺🇸', click_count: 0 },
+    { id: 'exchange', name: '환율 계산기', icon: '💱', click_count: 0 },
+    { id: 'crypto', name: '암호화', icon: '🔐', click_count: 0 },
+  ])
 
-  const calculators = [
-    { id: 'salary', name: '연봉 계산기', icon: '💵' },
-    { id: 'interest', name: '이자 계산기', icon: '💰' },
-    { id: 'dday', name: 'D-day 계산기', icon: '📅' },
-    { id: 'unit', name: '미국 단위 변환', icon: '🇺🇸' },
-    { id: 'exchange', name: '환율 계산기', icon: '💱' },
-    { id: 'crypto', name: '암호화', icon: '🔐' },
-  ]
+  const API_BASE = ''
+
+  useEffect(() => {
+    loadCalculatorStats()
+  }, [])
+
+  const loadCalculatorStats = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/api/calculator-stats`)
+      if (response.ok) {
+        const data = await response.json()
+        if (data.calculators && data.calculators.length > 0) {
+          setCalculators(data.calculators)
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load calculator stats:', error)
+    }
+  }
+
+  const trackCalculatorClick = async (calculatorId) => {
+    try {
+      await fetch(`${API_BASE}/api/calculator-stats`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ calculator_id: calculatorId })
+      })
+      // 클릭 후 통계 재로드
+      loadCalculatorStats()
+    } catch (error) {
+      console.error('Failed to track calculator click:', error)
+    }
+  }
 
   const handleHamsterClick = () => {
     const messages = ['계빠르지!', '못잡계찌!']
@@ -93,7 +128,10 @@ function MainPage() {
           <button
             key={calc.id}
             className={`tab-button ${activeTab === calc.id ? 'active' : ''}`}
-            onClick={() => setActiveTab(calc.id)}
+            onClick={() => {
+              setActiveTab(calc.id)
+              trackCalculatorClick(calc.id)
+            }}
           >
             <span className="tab-icon">{calc.icon}</span>
             <span className="tab-name">{calc.name}</span>
