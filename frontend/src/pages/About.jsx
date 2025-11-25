@@ -18,12 +18,18 @@ function About() {
           <h2>제공하는 기능</h2>
           <ul className="feature-list">
             <li>
+              <strong>💵 연봉 실수령액 계산기</strong>
+              <p>2025년 기준 세율로 연봉에서 실수령액을 계산하거나, 원하는 월급에서 필요한 연봉을 역산합니다. </p>
+              <p>중소기업 청년 소득세 감면도 지원합니다.</p>
+            </li>
+            <li>
               <strong>💰 이자 계산기</strong>
               <p>예금과 적금의 이자를 계산하고, 세금까지 고려한 실수령액을 확인할 수 있습니다.</p>
             </li>
             <li>
               <strong>📅 D-day 계산기</strong>
-              <p>중요한 날까지 남은 일수를 계산하고 관리할 수 있습니다.</p>
+              <p>중요한 날까지 남은 일수를 계산하고 즐겨찾기로 관리할 수 있습니다. </p>
+              <p>D1 데이터베이스에 저장됩니다.</p>
             </li>
             <li>
               <strong>🇺🇸 미국 단위 변환기</strong>
@@ -32,6 +38,10 @@ function About() {
             <li>
               <strong>💱 환율 계산기</strong>
               <p>실시간(1회/일 업데이트) 환율 및 통화간 변환 기능을 제공합니다.</p>
+            </li>
+            <li>
+              <strong>🔐 텍스트 암호화</strong>
+              <p>Base64, MD5, SHA-256 등 다양한 방식으로 텍스트를 암호화할 수 있습니다.</p>
             </li>
           </ul>
         </section>
@@ -42,6 +52,8 @@ function About() {
             <span className="tech-badge">React</span>
             <span className="tech-badge">Vite</span>
             <span className="tech-badge">Cloudflare Pages</span>
+            <span className="tech-badge">Cloudflare D1</span>
+            <span className="tech-badge">Pages Functions</span>
           </div>
         </section>
 
