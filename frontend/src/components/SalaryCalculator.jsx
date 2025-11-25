@@ -12,7 +12,6 @@ function SalaryCalculator() {
   const calculateDeductions = (annualAmount, applySmallBusinessTax = false) => {
     const monthly = annualAmount / 12
 
-    // 연봉별 정확한 공제액 테이블 (참고: https://job.cosmosfarm.com)
     const deductionTable = {
       10000000: { pension: 32990, health: 22870, longterm: 1680, employment: 4760, incomeTax: 0 },
       11000000: { pension: 36740, health: 25470, longterm: 1870, employment: 5300, incomeTax: 0 },
