@@ -11,7 +11,7 @@ function PostBoard() {
   const [formData, setFormData] = useState({ title: '', content: '', author_name: '' })
   const [loading, setLoading] = useState(false)
 
-  const API_BASE = window.location.hostname === 'localhost' ? '' : '/api'
+  const API_BASE = ''
 
   const getUserId = () => {
     let userId = localStorage.getItem('userId')

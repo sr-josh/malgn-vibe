@@ -11,7 +11,7 @@ function ContactForm() {
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
-  const API_BASE = window.location.hostname === 'localhost' ? '' : '/api'
+  const API_BASE = ''
 
   const handleSubmit = async (e) => {
     e.preventDefault()
