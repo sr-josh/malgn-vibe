@@ -47,7 +47,7 @@ function About() {
 
         <section className="about-section">
           <h2>연락처</h2>
-          <p>문의사항이나 개선 제안이 있으시면 언제든지 연락주세요.</p>
+          <p>비밀</p>
         </section>
       </div>
     </div>
