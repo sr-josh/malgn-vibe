@@ -10,6 +10,13 @@ binding = "DB"
 database_name = "calculator-db"
 database_id = "45e7a465-03bb-4f55-8902-3591727d3fe2"
 
+# Environment variables
+# Alpha Vantage API Key (무료: https://www.alphavantage.co/support/#api-key)
+# 로컬 개발: wrangler.toml에 직접 설정
+# 프로덕션: Cloudflare Dashboard > Pages > Settings > Environment variables에서 설정
+[vars]
+# ALPHA_VANTAGE_KEY = "your_api_key_here"  # 주석 해제 후 키 입력
+
 # Production environment
 [env.production]
 name = "calculator-collection-production"

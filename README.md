@@ -98,6 +98,17 @@ Cloudflare Pages와 Workers를 활용한 계산기 모음 프로젝트입니다.
 
 ### 📋 게시판
 - 게시글 작성/조회/수정/삭제 (CRUD)
+- 페이지네이션 지원
+- 조회수 자동 카운트
+- 작성자 본인만 수정/삭제 가능
+
+### 📊 주요 지수
+- 실시간 시장 데이터 조회
+- 코스피, 나스닥, S&P 500
+- 그람당 금시세 (원화)
+- USD/KRW 환율
+- 미국 10년물/30년물 국채 금리
+- 5분마다 자동 갱신
 - 페이지네이션 (페이지당 10개)
 - 조회수 자동 증가
 - 본인 작성 글만 수정/삭제 가능
@@ -251,11 +262,44 @@ const calculators = [
 3. **requests** - 문의하기
    - id, name, email, subject, message, status, created_at
 
+4. **calculator_stats** - 계산기 통계
+   - id, name, icon, click_count, last_clicked_at, created_at, updated_at
+
 **마이그레이션 실행:**
 ```bash
 npx wrangler d1 execute calculator-db --remote --file="migrations/001_dday.sql"
 npx wrangler d1 execute calculator-db --remote --file="migrations/002_posts_and_requests.sql"
+npx wrangler d1 execute calculator-db --remote --file="migrations/003_calculator_stats.sql"
 ```
+
+## 🔑 API 키 설정 (주요 지수 기능)
+
+주요 지수 탭에서 실시간 데이터를 받으려면 Alpha Vantage 무료 API 키가 필요합니다.
+
+### 1. API 키 발급
+1. [Alpha Vantage](https://www.alphavantage.co/support/#api-key) 사이트 방문
+2. 이메일 입력 후 무료 API 키 받기 (1분 소요)
+3. 제약사항: 5 calls/minute, 500 calls/day (무료 티어)
+
+### 2. 로컬 개발 설정
+`wrangler.toml` 파일 수정:
+```toml
+[vars]
+ALPHA_VANTAGE_KEY = "your_api_key_here"  # 발급받은 키 입력
+```
+
+### 3. 프로덕션 배포 설정
+Cloudflare Dashboard에서 설정:
+1. Cloudflare Dashboard > Pages > 프로젝트 선택
+2. Settings > Environment variables
+3. Production 탭에서 추가:
+   - Variable name: `ALPHA_VANTAGE_KEY`
+   - Value: `your_api_key_here`
+4. Save 클릭
+
+### 4. API 없이 사용
+API 키 없이도 기본 작동하지만, 주요 지수 데이터는 샘플 데이터로 표시됩니다.
+실시간 데이터를 보려면 위 단계를 따라 API 키를 설정하세요.
 
 ## 🛠 기술 스택
 
