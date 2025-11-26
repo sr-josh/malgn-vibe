@@ -8,6 +8,7 @@ import UnitConverter from './components/UnitConverter'
 import ExchangeCalculator from './components/ExchangeCalculator'
 import CryptoCalculator from './components/CryptoCalculator'
 import MarketIndex from './components/MarketIndex'
+import IPOCalendar from './components/IPOCalendar'
 import About from './pages/About'
 import Board from './pages/Board'
 import Privacy from './pages/Privacy'
@@ -28,6 +29,7 @@ function MainPage() {
     { id: 'exchange', name: '환율 계산기', icon: '💱', click_count: 0 },
     { id: 'crypto', name: '암호화', icon: '🔐', click_count: 0 },
     { id: 'market', name: '주요 지수', icon: '📊', click_count: 0 },
+    { id: 'ipo', name: '공모주 일정', icon: '📅', click_count: 0 },
   ])
 
   const API_BASE = ''
@@ -97,6 +99,8 @@ function MainPage() {
         return <CryptoCalculator />
       case 'market':
         return <MarketIndex />
+      case 'ipo':
+        return <IPOCalendar />
       default:
         return <InterestCalculator />
     }
