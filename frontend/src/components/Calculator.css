@@ -223,3 +223,33 @@ to { opacity: 1; transform: translateY(0); }
 .contact-textarea { min-height: 150px; }
 .success-message { padding: 1rem; background: rgba(34, 197, 94, 0.1); border: 2px solid rgba(34, 197, 94, 0.3); border-radius: 10px; color: #22c55e; font-weight: 600; text-align: center; margin-bottom: 1.5rem; animation: slideDown 0.3s ease-out; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* 주요 지수 스타일 */
+.market-index { max-width: 900px; }
+.market-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding: 1rem; background: #1a1a1a; border-radius: 10px; flex-wrap: wrap; gap: 1rem; }
+.refresh-btn { padding: 0.75rem 1.5rem; border: 2px solid #667eea; border-radius: 8px; background: rgba(102, 126, 234, 0.1); color: #667eea; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.refresh-btn:hover:not(:disabled) { background: #667eea; color: white; transform: translateY(-2px); }
+.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.last-update { color: #888; font-size: 0.9rem; }
+.error-message { padding: 1rem; background: rgba(239, 68, 68, 0.1); border: 2px solid rgba(239, 68, 68, 0.3); border-radius: 10px; color: #ef4444; text-align: center; margin-bottom: 1.5rem; }
+.index-category { margin-bottom: 2rem; }
+.category-title { margin: 0 0 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #3d3d3d; color: #667eea; font-size: 1.2rem; }
+.index-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.index-card { padding: 1.5rem; background: #1a1a1a; border: 2px solid #3d3d3d; border-radius: 12px; transition: all 0.3s; }
+.index-card:hover { border-color: #667eea; transform: translateY(-4px); box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2); }
+.index-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+.index-icon { font-size: 2rem; }
+.index-info { flex: 1; }
+.index-name { font-size: 1.1rem; font-weight: 600; color: #fff; }
+.index-description { font-size: 0.85rem; color: #888; margin-top: 0.25rem; }
+.index-price { font-size: 1.8rem; font-weight: 700; color: #fff; margin: 1rem 0 0.5rem; }
+.index-change { display: flex; gap: 0.5rem; align-items: center; font-size: 0.95rem; font-weight: 600; margin-top: 0.5rem; }
+.index-change.positive { color: #22c55e; }
+.index-change.positive .change-value::before { content: '▲ '; }
+.index-change.negative { color: #ef4444; }
+.index-change.negative .change-value::before { content: '▼ '; }
+.change-percent { opacity: 0.8; }
+.index-na { color: #888; font-style: italic; margin-top: 1rem; }
+.gold-krw { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #3d3d3d; }
+.gold-krw-label { color: #aaa; font-size: 0.9rem; }
+.gold-krw-value { color: #fbbf24; font-weight: 600; font-size: 1.1rem; }

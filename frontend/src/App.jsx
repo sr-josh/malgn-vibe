@@ -7,6 +7,7 @@ import DdayCalculator from './components/DdayCalculator'
 import UnitConverter from './components/UnitConverter'
 import ExchangeCalculator from './components/ExchangeCalculator'
 import CryptoCalculator from './components/CryptoCalculator'
+import MarketIndex from './components/MarketIndex'
 import About from './pages/About'
 import Board from './pages/Board'
 import Privacy from './pages/Privacy'
@@ -93,6 +94,8 @@ function MainPage() {
         return <ExchangeCalculator />
       case 'crypto':
         return <CryptoCalculator />
+      case 'market':
+        return <MarketIndex />
       default:
         return <InterestCalculator />
     }
