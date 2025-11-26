@@ -13,17 +13,20 @@ export async function onRequestGet(context) {
 
     const symbolsQuery = symbols.join(',')
     
-    // Yahoo Finance API 사용
-    const apiUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbolsQuery}`
+    // Yahoo Finance API 사용 (query2 엔드포인트 - 더 안정적)
+    const apiUrl = `https://query2.finance.yahoo.com/v7/finance/quote?symbols=${symbolsQuery}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,regularMarketPreviousClose,regularMarketTime,shortName,longName`
     
     const response = await fetch(apiUrl, {
       headers: {
-        'User-Agent': 'Mozilla/5.0'
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Accept': 'application/json',
+        'Accept-Language': 'en-US,en;q=0.9'
       }
     })
 
     if (!response.ok) {
-      throw new Error('Failed to fetch from Yahoo Finance')
+      const errorText = await response.text()
+      throw new Error(`Yahoo Finance API error: ${response.status} - ${errorText}`)
     }
 
     const data = await response.json()

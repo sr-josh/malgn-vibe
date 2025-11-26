@@ -27,6 +27,7 @@ function MainPage() {
     { id: 'unit', name: '미국 단위 변환', icon: '🇺🇸', click_count: 0 },
     { id: 'exchange', name: '환율 계산기', icon: '💱', click_count: 0 },
     { id: 'crypto', name: '암호화', icon: '🔐', click_count: 0 },
+    { id: 'market', name: '주요 지수', icon: '📊', click_count: 0 },
   ])
 
   const API_BASE = ''

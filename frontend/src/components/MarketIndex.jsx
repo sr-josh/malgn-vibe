@@ -72,15 +72,21 @@ function MarketIndex() {
       const response = await fetch(`${API_BASE}/api/market-index`)
       
       if (!response.ok) {
-        throw new Error('Failed to fetch market data')
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error || `HTTP ${response.status}: Failed to fetch market data`)
       }
       
       const data = await response.json()
-      setIndices(data.indices)
+      
+      if (data.error) {
+        throw new Error(data.error)
+      }
+      
+      setIndices(data.indices || {})
       setLastUpdate(new Date())
     } catch (error) {
       console.error('Error loading market data:', error)
-      setError('시장 데이터를 불러오는데 실패했습니다.')
+      setError(`시장 데이터를 불러오는데 실패했습니다: ${error.message}`)
     } finally {
       setLoading(false)
     }
