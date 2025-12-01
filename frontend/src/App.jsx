@@ -44,7 +44,11 @@ function MainPage() {
       if (response.ok) {
         const data = await response.json()
         if (data.calculators && data.calculators.length > 0) {
-          setCalculators(data.calculators)
+          // 공모주(ipo)와 주요지수(market) 제외
+          const filteredCalculators = data.calculators.filter(
+            calc => calc.id !== 'ipo' && calc.id !== 'market'
+          )
+          setCalculators(filteredCalculators)
         }
       }
     } catch (error) {
